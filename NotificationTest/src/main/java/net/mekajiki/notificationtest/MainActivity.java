@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
@@ -27,19 +28,34 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void notify(View view){
+    public void notifyDelayed(View view){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                pushNotification();
+            }
+        }, 5000);
+    }
+
+    public void pushNotification(){
+        Intent push = new Intent();
+        push.setClass(getApplicationContext(), PendingActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(getBaseContext(), 0, push,
+                PendingIntent.FLAG_ONE_SHOT);
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("My notification")
-                        .setContentText("Hello World!");
-
-        Intent resultIntent = new Intent(this, MainActivity.class);
+                        .setContentText("Hello World!")
+                        .setFullScreenIntent(pi, true)
+                ;
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
         stackBuilder.addParentStack(MainActivity.class);
 
+        Intent resultIntent = new Intent(this, MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
