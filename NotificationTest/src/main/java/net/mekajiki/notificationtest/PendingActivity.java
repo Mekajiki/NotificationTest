@@ -28,6 +28,7 @@ public class PendingActivity extends Activity {
                         PendingActivity.this.finish();
                     }
                 })
+                .setCancelable(false)
                 .show();
     }
 
